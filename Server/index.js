@@ -1,24 +1,23 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import userRoutes from './Router/UserRoute.js'
-import adminRoute from './Router/TempMalik.js'
-import orderRoute from './Router/SellRoute.js'
 import connectDB from './Database/ConnectDB.js';
 import cookieParser from 'cookie-parser';
+
+// Routes
+import userRoutes from './Router/UserRoute.js';
+import itemRoutes from './Router/ItemRoute.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+// Connect to Database
 connectDB();
 
-
-
-// CORS for frontend (React/Vite)
+// Allowed CORS origins for frontend
 const allowedOrigins = [
-  'https://kabadiwala.onrender.com',
-  'https://kabadiwala-1.onrender.com'
+  'http://localhost:5173' // for local dev
 ];
 
 app.use(cors({
@@ -32,16 +31,16 @@ app.use(cors({
   credentials: true
 }));
 
-
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-app.set("trust proxy", 1);
 
-app.use(`/user`, userRoutes);
-app.use(`/admin`, adminRoute);
-app.use(`/order`, orderRoute);
+// Routes
+app.use('/user', userRoutes);
+app.use('/items', itemRoutes);
 
+// Server Start
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
